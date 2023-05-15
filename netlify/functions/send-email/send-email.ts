@@ -1,7 +1,7 @@
 import { Handler } from "@netlify/functions";
 import axios from "axios";
-import nodemailer from "nodemailer";
 import * as EmailValidator from "email-validator";
+import sendMail from "../../../modules/email/index";
 
 export const handler: Handler = async (event, context) => {
   if (event.httpMethod !== "POST") {
@@ -13,11 +13,9 @@ export const handler: Handler = async (event, context) => {
   }
   try {
     const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-    const SMTP_HOST = process.env.SMTP_HOST;
-    const SMTP_PORT = Number(process.env.SMTP_PORT);
-    const SMTP_USERNAME = process.env.SMTP_USERNAME;
-    const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
-    const EMAIL_FROM = process.env.EMAIL_FROM;
+    const EMAIL_ADAPTER = process.env.EMAIL_ADAPTER;
+    const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME;
+    const EMAIL_FROM_MAIL = process.env.EMAIL_FROM_MAIL;
     const EMAIL_BODY = Buffer.from(
       process.env.EMAIL_BODY ? process.env.EMAIL_BODY : "",
       "base64"
@@ -60,20 +58,12 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      auth: {
-        user: SMTP_USERNAME,
-        pass: SMTP_PASSWORD,
-      },
-    });
-
-    await transporter.sendMail({
-      from: EMAIL_FROM,
-      to: email,
+    await sendMail(EMAIL_ADAPTER ? EMAIL_ADAPTER : "SMTP", {
+      senderName: EMAIL_FROM_NAME!,
+      senderMail: EMAIL_FROM_MAIL!,
+      recipientMail: email,
       subject: subject,
-      text: EMAIL_BODY,
+      body: EMAIL_BODY,
     });
 
     return {
