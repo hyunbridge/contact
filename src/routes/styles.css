@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.grecaptcha-badge {
+	visibility: hidden;
+}
+
+body {
+	font-family: 'Lexend Deca', sans-serif;
+}
