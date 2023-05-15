@@ -70,7 +70,7 @@ export const handler: Handler = async (event, context) => {
       },
     });
 
-    transporter.sendMail({
+    await transporter.sendMail({
       from: EMAIL_FROM,
       to: email,
       subject: subject,
