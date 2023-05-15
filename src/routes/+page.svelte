@@ -55,13 +55,16 @@
       buttonsStyling: false,
     });
 
+    isSubmitEnabled = true;
+    isLoading = false;
     subject = "";
     email = "";
   };
 
   const onCaptchaReady = () => {
-    isSubmitEnabled = true;
-    isLoading = false;
+    if (!isLoading) {
+      isSubmitEnabled = true;
+    }
   };
 
   const onCaptchaSuccess = (event) => {
