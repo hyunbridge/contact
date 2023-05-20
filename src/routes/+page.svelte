@@ -9,6 +9,7 @@
   let isSubmitEnabled = false;
   let isPendingUserAction = false;
   let isLoading = false;
+  let isVerificationInProgress = false;
 
   let resetRecaptcha = 0;
 
@@ -18,6 +19,10 @@
     event.preventDefault();
 
     recaptcha.execute();
+
+    if (isVerificationInProgress) return;
+    isVerificationInProgress = true;
+
     const recaptchaEvent = await Promise.resolve(observer);
     const recaptchaToken = recaptchaEvent.detail?.token
       ? recaptchaEvent.detail.token
@@ -25,6 +30,7 @@
 
     isSubmitEnabled = false;
     isLoading = true;
+    isVerificationInProgress = false;
 
     let hasError = false;
     let response;
